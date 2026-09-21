@@ -80,5 +80,71 @@ The records at 10:05 and 10:06 appear unusual:
 These two records indicate a short service incident involving high latency, errors, and resource pressure. The return to normal values at 10:07 suggests that the service recovered after the incident.
 
 --------------------------------TASK 2 COMPLETE---------------------------------
-## TASK3
+# TASK3
+The provided AIOps pipeline processed all 10 records from
+`data/service_data.json`. The anomaly detector checks response time, CPU
+utilization, memory utilization, and error log levels.
 
+## Detection result
+
+- Records processed: 10
+- Anomalies detected: 2
+- Events consumed: 0
+
+## Detected anomalies
+
+### Observation at 2026-09-20T10:05:00
+
+- Service: `payment-service`
+- Response time: `610 ms`
+- CPU utilization: `75%`
+- Memory utilization: `70%`
+- Log level: `ERROR`
+- Message: `Payment service timeout`
+- Reasons flagged:
+  - High response time
+  - Error log detected
+
+### Observation at 2026-09-20T10:06:00
+
+- Service: `payment-service`
+- Response time: `640 ms`
+- CPU utilization: `94%`
+- Memory utilization: `91%`
+- Log level: `ERROR`
+- Message: `Database connection timeout`
+- Reasons flagged:
+  - High response time
+  - High CPU utilization
+  - High memory utilization
+  - Error log detected
+
+## Normal and anomalous observations
+
+The records from 10:00 to 10:04 and from 10:07 to 10:09 were treated as
+normal. They contain successful payment messages, `INFO` log levels, response
+times between 120 and 150 ms, CPU utilization between 42% and 50%, and memory
+utilization between 51% and 57%.
+
+The records at 10:05 and 10:06 were correctly identified as anomalous. They
+contain high response times and `ERROR` logs. The 10:06 observation also shows
+high CPU and memory utilization.
+
+# No expected anomaly appears to have been missed, and no normal observation
+# appears to have been incorrectly flagged in this dataset.
+
+## Detection limitation
+
+The detector uses fixed thresholds and simple rules. It does not learn the
+normal behavior of the service or detect gradual changes over time. A possible
+improvement would be to calculate dynamic thresholds from historical data and
+correlate related metrics with log events.
+
+## Pipeline issue
+
+Although two anomalies were detected, the final output shows zero events
+consumed. The producer publishes events to the `service-events` topic, while
+the consumer reads from the separate `anomaly-events` topic. Because the
+topics are different, the detected events are not displayed in the consumed
+events report. This is a configuration issue in the provided pipeline.
+-----------------------------------task 3 completed------------------------------------------
