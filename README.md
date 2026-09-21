@@ -291,3 +291,31 @@ Expected checks:
 
 --------------------------------TASK 7 COMPLETE---------------------------------
 
+# TASK 8: VALIDATION
+
+The provided validation was run with:
+
+```bash
+pytest
+python src/aiops_pipeline.py
+```
+
+Validation results:
+
+```text
+8 passed
+Records processed: 10
+Anomalies detected: 2
+Events consumed: 2
+```
+
+The tests and end-to-end run confirm that operational data is processed,
+anomalies and events are generated, events move through the simulated topic,
+the consumer receives them, and the final AIOps workflow completes
+successfully.
+
+The original failures were resolved by sharing one event topic between the
+producer and consumer and configuring the `src` package for pytest imports.
+
+--------------------------------TASK 8 COMPLETE---------------------------------
+
