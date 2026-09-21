@@ -191,5 +191,17 @@ consumer use different topic instances. The consumer must use the same topic
 as the producer before events can be received, processed, and passed to
 downstream AIOps processing.
 
---------------------------------TASK 4 COMPLETE---------------------------------
+--------------------------------TASK 4 COMPLETE----------------------------
+
+# TASK 5: INVESTIGATE AND CORRECT THE WORKFLOW
+- **Issue** The anomaly detector was using warning log to detect error anomaly
+  **Fix** The changed log matching from warning to "ERROR"
+- **Issue:** The producer and consumer used different event topics.
+  **Fix:** Both now share the same `EventTopic` instance. Result: 2 events
+  were consumed successfully.
+- **Issue:** Tests could not import the `src` package.
+  **Fix:** Added `src/__init__.py`, compatible package imports, and
+  `pytest.ini` with `pythonpath = .`. Result: all 8 tests passed.
+
+--------------------------------TASK 5 COMPLETE--------------------------
 
