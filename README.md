@@ -35,7 +35,7 @@ The problem is to identifying payment-service health issues such as slow respons
 - `src/event_topic.py`: Provides an in-memory event topic.(store messages)
 - `src/event_consumer.py`: Consumes published anomaly events.(read msgs)
 - `src/aiops_pipeline.py`: Coordinates data loading, anomaly detection, event production, and event consumption.
---------------------------------TASK 1 COMPLETE---------------------------------
+--------------------------------TASK 1 COMPLETE------------------------
 
 # TASK 2
 
@@ -79,7 +79,7 @@ The records at 10:05 and 10:06 appear unusual:
 
 These two records indicate a short service incident involving high latency, errors, and resource pressure. The return to normal values at 10:07 suggests that the service recovered after the incident.
 
---------------------------------TASK 2 COMPLETE---------------------------------
+--------------------------------TASK 2 COMPLETE------------------------------
 # TASK3
 The provided AIOps pipeline processed all 10 records from
 `data/service_data.json`. The anomaly detector checks response time, CPU
@@ -147,4 +147,49 @@ consumed. The producer publishes events to the `service-events` topic, while
 the consumer reads from the separate `anomaly-events` topic. Because the
 topics are different, the detected events are not displayed in the consumed
 events report. This is a configuration issue in the provided pipeline.
------------------------------------task 3 completed------------------------------------------
+------------------------task 3 completed---------------------------------
+# Task 4
+The provided workflow was executed with:
+
+```bash
+python src/aiops_pipeline.py
+```
+
+## Component roles
+
+- **Event**: An anomaly record created by `AnomalyDetector`. It contains the
+  timestamp, service, anomaly type, detection reasons, and source record.
+- **Producer**: `EventProducer` receives a detected event and publishes it to
+  an `EventTopic`.
+- **Topic**: `EventTopic` is an in-memory message store. It accepts published
+  events and returns them when requested.
+- **Consumer**: `EventConsumer` reads messages from its configured topic.
+- **AIOps pipeline**: `aiops_pipeline.py` loads the operational data, detects
+  anomalies, sends events to the producer, and requests events from the
+  consumer.
+
+## Execution result
+
+The workflow produced this result:
+
+```text
+Records processed: 10
+Anomalies detected: 2
+Events consumed: 0
+```
+
+The detection process identified two anomalies and passed both events to the
+producer. The producer published the events to the `service-events` topic.
+However, the consumer was configured to read from the separate
+`anomaly-events` topic, so it received zero events.
+
+## Verification conclusion
+
+The detection-to-producer portion of the event flow works. The complete
+event-processing pipeline does not currently work because the producer and
+consumer use different topic instances. The consumer must use the same topic
+as the producer before events can be received, processed, and passed to
+downstream AIOps processing.
+
+--------------------------------TASK 4 COMPLETE---------------------------------
+
